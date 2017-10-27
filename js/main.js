@@ -7,14 +7,23 @@ if (document.readyState === 'complete' || document.readyState !== 'loading') {
 function eventHandler() {
     // код здесь
     var _data = getData();
-    console.log(_data);
+    var count = 0, total = 0.0;
     
     var buffer = "";
     for(var i=0;i<_data.length;i++) {
-        buffer += getItem(_data[i].name, _data[i].price, _data[i].year);
+        var left = false, right = false;
+        if(i % 3 == 0)
+            left = true;
+        else if((i+1) % 3 == 0)
+             right = true;
+        if(i == _data.length - 1) {
+            left = false;
+            right = false;
+        }
+        buffer += getItem(_data[i].name, _data[i].price, _data[i].year,i,left, right);
     }
-    console.log(buffer);
-    $(".items-wrapper").append(buffer);
+
+    $(".row-wrapper").append(buffer);
      // запрашиваем данные
 
     function getData() {
@@ -28,25 +37,36 @@ function eventHandler() {
         $(".content-wrapper").show();
     });
 
-    function getItem(name, price, year) {
+    $(".item-button button").click(function(){
+        var id = parseInt(this.id);
+        var price = parseFloat(_data[id].price.replace(/\$(.*)/,'$1'));
+        $("span#bottles-count").html(++count);
+        $("span#total").html((total += price).toFixed(2));
+    });
+
+    function getItem(name, price, year, index, left = false, right = false) {
         return `<div class="item-wrapper">
-                <div class="item-image"></div>
-                <div class="price-wrapper">
-                    <div class="vine-name">
-                        ${name}
+                    <div class="item ${left ? "float-left" : ""} ${right ? "float-right" : ""}">
+                        <div class="item-content">
+                            <div class="item-image">
+                                <img src="./img/background.jpg" />
+                            </div>
+                            <div class="price-wrapper">
+                                <div class="vine-name">
+                                    ${name}
+                                </div>
+                                <div class="item-price">
+                                    ${price.replace(/\$(.*)\..*/, '$1$')}
+                                </div>
+                            </div>
+                            <div class="item-date">
+                                Year: ${year}
+                            </div>
+                            <div class="item-button">
+                                <button id="${index}">BUY</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="item-price">
-                        ${price}
-                    </div>
-                </div>
-                <div class="item-date">
-                    Year: ${year}
-                </div>
-                <div class="item-button">
-                    <button>BUY</button>
-                </div>
-            </div>`;
+                </div>`;
     }
 }
-
-
