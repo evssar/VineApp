@@ -56,9 +56,9 @@ function eventHandler() {
     for(var i = 0; i < elements.length; i++) { 
         var elt = elements[i];
         var button = elt.children[0];
-        var id = parseInt(button.getAttribute("id"));
-        var price = parseFloat(_data[id].price.replace(/\$(.*)/,'$1'));
         button.addEventListener('click', function() {
+            var id = parseInt(this.getAttribute("id"));
+            var price = parseFloat(_data[id].price.replace(/\$(.*)/,'$1'));
             document.getElementById("bottles-count").innerHTML = ++count;
             document.getElementById("total").innerHTML = (total += price).toFixed(2);
         });
